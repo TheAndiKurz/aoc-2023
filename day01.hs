@@ -1,33 +1,63 @@
 module Main where
+import Data.Char (isDigit)
 
 strToInt :: String -> Integer
 strToInt [] = 0
 strToInt string = read string :: Integer
 
-elvesCarrying :: [String] -> [Integer]
-elvesCarrying [str] = [strToInt str]
-elvesCarrying (str : strs)
-    | null str = 0 : elvesCarrying strs
-    | otherwise = strToInt str + head (elvesCarrying strs) : tail (elvesCarrying strs)
+-- part one
+recoverAll :: [String] -> [Integer]
+recoverAll = map recover
 
-maxList :: [Integer] -> Integer
-maxList [x] = x
-maxList (x : xs) = max x (maxList xs)
+recover :: String -> Integer
+recover str = recoverOneDir str * 10 + recoverOneDir (reverse str) 
+    where recoverOneDir (c : cs) 
+            | isDigit c = read [c]
+            | otherwise = recoverOneDir cs
 
-max3List :: [Integer] -> (Integer, Integer, Integer)
-max3List l = max3Helper l 0 0 0
-max3Helper [] m1 m2 m3 = (m1, m2, m3)
-max3Helper (x : xs) m1 m2 m3
-    | x > m1 = max3Helper xs x m1 m2
-    | x > m2 = max3Helper xs m1 x m2
-    | x > m3 = max3Helper xs m1 m2 x
-    | otherwise = max3Helper xs m1 m2 m3
 
-sum3 (x, y, z) = x + y + z
+-- part two
+recoverAll2 :: [String] -> [Integer]
+recoverAll2 = map recover2
+
+recover2 :: String -> Integer
+recover2 str = let numsLine = recoverLine str in 
+    head numsLine * 10 + last numsLine
+
+recoverLine :: String -> [Integer]
+recoverLine [] = []
+recoverLine str@(c : cs)
+    | isDigit c = read [c] : recoverLine cs
+    | otherwise = case parseWrittenNumber str of
+                    Just n -> n : recoverLine cs
+                    Nothing -> recoverLine cs
+
+parseWrittenNumber :: String -> Maybe Integer
+parseWrittenNumber str 
+    | strBeginsWith "one" str = Just 1 
+    | strBeginsWith "two" str = Just 2
+    | strBeginsWith "three" str = Just 3
+    | strBeginsWith "four" str = Just 4
+    | strBeginsWith "five" str = Just 5
+    | strBeginsWith "six" str = Just 6
+    | strBeginsWith "seven" str = Just 7
+    | strBeginsWith "eight" str = Just 8
+    | strBeginsWith "nine" str = Just 9
+    | otherwise = Nothing
+
+strBeginsWith :: String -> String -> Bool
+strBeginsWith [] [] = True
+strBeginsWith [] str = True
+strBeginsWith str [] = False
+strBeginsWith (c1 : cs1) (c2 : cs2)
+    | c1 == c2 = strBeginsWith cs1 cs2
+    | otherwise = False
 
 main :: IO ()
 main = do
     contents <- readFile "day01.data" 
-    let elves = elvesCarrying (lines contents)
-    print (sum3 (max3List elves))
+    let numbers = recoverAll (lines contents)
+    print (sum numbers)
     
+    let numbers = recoverAll2 (lines contents)
+    print (sum numbers)
