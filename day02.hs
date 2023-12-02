@@ -2,6 +2,7 @@ module Main where
 import Data.Char (isDigit, isSpace)
 import Data.Text (splitOn)
 import Debug.Trace (trace)
+import Util (splitStr, getNum)
 
 data Game = 
     Game {
@@ -9,19 +10,6 @@ data Game =
     rounds :: [(Integer, Integer, Integer)]
     } deriving (Show)    
 
-splitStr :: Char -> String -> [String]
-splitStr c1 (c2 : cs) = splitStr' c1 (c2 : cs) ""
-    where 
-        splitStr' c1 [] acc = [acc]
-        splitStr' c1 (c2 : cs) acc
-            | c2 == c1 = acc : splitStr' c1 cs ""
-            | otherwise = splitStr' c1 cs (acc ++ [c2])
-
-getNum :: String -> String
-getNum [] = []
-getNum (c : cs)
-    | isDigit c = c : getNum cs
-    | otherwise = []
 
 extractGame :: String -> Game
 extractGame line@(c : cs) = Game {gid=getGameId (head splitColon), rounds=getGameRounds (last splitColon)}

@@ -1,10 +1,6 @@
 module Main where
 import Data.Char (isDigit)
 
-strToInt :: String -> Integer
-strToInt [] = 0
-strToInt string = read string :: Integer
-
 -- part one
 recoverAll :: [String] -> [Integer]
 recoverAll = map recover
