@@ -53,11 +53,11 @@ minBag :: Game -> (Integer, Integer, Integer)
 minBag g@(Game _ rounds) = minBag' rounds (0, 0, 0)
     where 
     minBag' [] cubes = cubes
-    minBag' ro@((gr, gg, gb) : gs) (r, g, b)
-        | gr > r = minBag' ro (gr, g, b)
-        | gg > g = minBag' ro (r, gg, b)
-        | gb > b = minBag' ro (r, g, gb)
-        | otherwise = minBag' gs (r, g, b)
+    minBag' same@((gr, gg, gb) : next) (r, g, b)
+        | gr > r = minBag' same (gr, g, b)
+        | gg > g = minBag' same (r, gg, b)
+        | gb > b = minBag' same (r, g, gb)
+        | otherwise = minBag' next (r, g, b)
 
 gamePower :: Game -> Integer
 gamePower game = r * g * b
