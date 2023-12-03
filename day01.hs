@@ -29,25 +29,16 @@ recoverLine str@(c : cs)
                     Nothing -> recoverLine cs
 
 parseWrittenNumber :: String -> Maybe Integer
-parseWrittenNumber str 
-    | strBeginsWith "one" str = Just 1 
-    | strBeginsWith "two" str = Just 2
-    | strBeginsWith "three" str = Just 3
-    | strBeginsWith "four" str = Just 4
-    | strBeginsWith "five" str = Just 5
-    | strBeginsWith "six" str = Just 6
-    | strBeginsWith "seven" str = Just 7
-    | strBeginsWith "eight" str = Just 8
-    | strBeginsWith "nine" str = Just 9
-    | otherwise = Nothing
-
-strBeginsWith :: String -> String -> Bool
-strBeginsWith [] [] = True
-strBeginsWith [] str = True
-strBeginsWith str [] = False
-strBeginsWith (c1 : cs1) (c2 : cs2)
-    | c1 == c2 = strBeginsWith cs1 cs2
-    | otherwise = False
+parseWrittenNumber ('o' : 'n' : 'e': rest) = Just 1
+parseWrittenNumber ('t' : 'w' : 'o': rest) = Just 2
+parseWrittenNumber ('t' : 'h' : 'r' : 'e' : 'e': rest) = Just 3
+parseWrittenNumber ('f' : 'o' : 'u' : 'r': rest) = Just 4
+parseWrittenNumber ('f' : 'i' : 'v' : 'e': rest) = Just 5
+parseWrittenNumber ('s' : 'i' : 'x' : rest) = Just 6
+parseWrittenNumber ('s' : 'e' : 'v' : 'e' : 'n': rest) = Just 7
+parseWrittenNumber ('e' : 'i' : 'g' : 'h' : 't': rest) = Just 8
+parseWrittenNumber ('n' : 'i' : 'n' : 'e': rest) = Just 9
+parseWrittenNumber _ = Nothing
 
 main :: IO ()
 main = do
