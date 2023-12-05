@@ -21,10 +21,6 @@ data Card =
     }
     deriving Show
 
-instance Eq Card where 
-    (Card cid1 _ _) == (Card cid2 _ _) = cid1 == cid2
-
-
 parseCard :: String -> Card
 parseCard cardStr =
     let (cidStr : contentStr : _) = splitStr ':' cardStr in
@@ -74,25 +70,12 @@ copiesFast :: [Card] -> Integer
 copiesFast cards =
     let rCards = reverse cards in
     let 
-        lookupInt :: [(Integer, Integer)] -> Integer -> Integer
-        lookupInt table cid = case lookup cid table of 
-                                Just n -> n
-                                Nothing -> 0
-    in
-    
-    let 
-        lookupRange :: [(Integer, Integer)] -> Integer -> Integer -> [Integer]
-        lookupRange table cid 0 = []
-        lookupRange table cid range = lookupInt table cid : lookupRange table (cid + 1) (range - 1)
-    in
-
-    let 
-        constructLTable :: [Card] -> [(Integer, Integer)] -> [(Integer, Integer)]
-        constructLTable [] lTable = lTable
-        constructLTable (card@(Card cid _ _) : rest) lTable = 
+        constructCopiesGen :: [Card] -> [Integer] -> [Integer]
+        constructCopiesGen [] lTable = lTable
+        constructCopiesGen (card@(Card cid _ _) : rest) lTable = 
             let numWinning = numWinningCard card in
-            let cardCopies = lookupRange lTable (cid + 1) numWinning in
-            constructLTable rest ((cid, 1 + sum cardCopies) : lTable)
+            let cardCopies = take (fromInteger numWinning) lTable in
+            constructCopiesGen rest (1 + sum cardCopies : lTable)
     in
-    sum $ map snd $ constructLTable rCards []
+    sum $ constructCopiesGen rCards []
 
