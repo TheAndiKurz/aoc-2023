@@ -1,3 +1,9 @@
+# ignore files without extension
+*
+!/**/
+!*.*
+
+# haskell ignores
 dist
 dist-*
 cabal-dev
